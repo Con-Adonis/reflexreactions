@@ -1,1 +1,7 @@
-@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply bg-[#1a1a2e] text-gray-200 overflow-hidden h-screen w-screen;
+}
