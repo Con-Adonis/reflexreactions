@@ -1,4 +1,5 @@
 import { useGameLogic } from './hooks/usegamelogic';
+// --- FIXED: Imports without .tsx extension ---
 import StartScreen from './components/startscreen';
 import GameScreen from './components/gamescreen';
 import GameOverScreen from './components/gameoverscreen';

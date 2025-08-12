@@ -1,7 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
-import { GameState, LevelData, SHAPES, COLORS } from '../global';
+import { GameState, LevelData, SHAPES, COLORS, ShapeType, ColorType } from '../global';
 
-const getRandomItem = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+// --- FIXED HELPER FUNCTION ---
+const getRandomItem = <T,>(arr: T[]): T => {
+  if (arr.length === 0) {
+    throw new Error('Cannot get a random item from an empty array.');
+  }
+  // Add a "!" at the end to assert that the value is not undefined.
+  return arr[Math.floor(Math.random() * arr.length)]!;
+};
+
+// ... the rest of the file is the same ...
 
 const generateLevel = (level: number): LevelData => {
   const correctColor = getRandomItem(COLORS);
@@ -16,8 +25,10 @@ const generateLevel = (level: number): LevelData => {
   const correct = { color: correctColor, shape: correctShape };
 
   let numShapes = 1;
-  if (level >= 2) numShapes = 3; if (level >= 4) numShapes = 5;
-  if (level >= 7) numShapes = 8; if (level >= 12) numShapes = 12;
+  if (level >= 2) numShapes = 3;
+  if (level >= 4) numShapes = 5;
+  if (level >= 7) numShapes = 8;
+  if (level >= 12) numShapes = 12;
 
   const shapes = [{ ...correct, id: 'correct-0' }];
   while (shapes.length < numShapes) {
@@ -62,7 +73,7 @@ export const useGameLogic = () => {
     return () => clearInterval(intervalId);
   }, [gameState, timer]);
 
-  const handleShapeClick = (shape: string, color: string) => {
+  const handleShapeClick = (shape: ShapeType, color: ColorType) => {
     if (gameState !== 'playing' || !currentLevelData) return;
     if (shape === currentLevelData.correct.shape && color === currentLevelData.correct.color) {
       nextLevel();
