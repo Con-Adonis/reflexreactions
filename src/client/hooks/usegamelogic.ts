@@ -60,7 +60,7 @@ export const useGameLogic = () => {
   const nextLevel = useCallback(() => {
     const newLevel = level + 1;
     setLevel(newLevel);
-    setTimer(prev => Math.min(prev + 1, 25));
+    setTimer(prev => Math.min(prev + 1, 10));
     setCurrentLevelData(generateLevel(newLevel));
     setFlashMessage('+1s');
     setTimeout(() => setFlashMessage(''), 1000);
