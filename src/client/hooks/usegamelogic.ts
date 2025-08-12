@@ -52,7 +52,7 @@ export const useGameLogic = () => {
 
   const startGame = () => {
     setLevel(1);
-    setTimer(15);
+    setTimer(10);
     setCurrentLevelData(generateLevel(1));
     setGameState('playing');
   };
