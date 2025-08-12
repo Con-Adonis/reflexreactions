@@ -16,35 +16,37 @@ const colorClasses: Record<ColorType, string> = {
 };
 
 const Shape: React.FC<ShapeProps> = ({ id, shape, color, onClick, level }) => {
+  // This state holds the target coordinates for the shape.
   const [position, setPosition] = useState({
     top: `${Math.random() * 80 + 10}%`,
     left: `${Math.random() * 80 + 10}%`,
     transform: `rotate(${Math.random() * 360}deg)`,
   });
 
-  // BUG FIX: Calculate the movement speed safely
-  const moveInterval = Math.max(500, 3000 - (level * 25)); // Ensures interval is never less than 500ms
-
+  // This effect updates the shape's target position at a regular interval.
   useEffect(() => {
+    // The *frequency* of movement increases with the level (interval gets shorter).
+    // This value is set to be slightly longer than the CSS transition duration below
+    // to allow one animation to finish before the next one begins.
+    const moveFrequency = Math.max(1600, 3000 - level * 50); // Cap at 1.6s frequency
+
     const intervalId = setInterval(() => {
       setPosition({
         top: `${Math.random() * 80 + 10}%`,
         left: `${Math.random() * 80 + 10}%`,
         transform: `rotate(${Math.random() * 360}deg)`,
       });
-    }, moveInterval);
+    }, moveFrequency);
 
+    // Clean up the interval when the component unmounts or the level changes.
     return () => clearInterval(intervalId);
-  }, [id, moveInterval]); // Depend on moveInterval so it adapts if needed
+  }, [id, level]); // Re-calculate the interval when the level changes.
 
-  // BUG FIX: Create a dynamic style for the transition to ensure it's always smooth
-  const dynamicStyle = {
-    ...position,
-    transition: `all ${moveInterval}ms ease-in-out`,
-  };
-
-  // Base classes no longer need the hardcoded duration
-  let shapeClasses = 'absolute w-20 h-20 md:w-24 md:h-24 cursor-pointer hover:!scale-110';
+  // --- THE KEY FIX IS HERE ---
+  // The transition is defined directly in the className with a fixed duration.
+  // This is stable and allows the browser to optimize the animation.
+  let shapeClasses = `absolute w-20 h-20 md:w-24 md:h-24 cursor-pointer hover:!scale-110 
+                      transition-all ease-linear duration-[1500ms]`; // A fixed 1.5-second transition
 
   if (shape === 'circle') {
     shapeClasses += ' rounded-full';
@@ -56,7 +58,7 @@ const Shape: React.FC<ShapeProps> = ({ id, shape, color, onClick, level }) => {
   return (
     <div
       className={shapeClasses}
-      style={dynamicStyle} // Use the new dynamic style object
+      style={position} // The style ONLY contains the target position, not the changing transition property.
       onClick={() => onClick(shape, color)}
     />
   );
