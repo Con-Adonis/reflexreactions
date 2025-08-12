@@ -25,8 +25,8 @@ const generateLevel = (level: number): LevelData => {
   const correct = { color: correctColor, shape: correctShape };
 
   let numShapes = 1;
-  if (level >= 2) numShapes = 3;
-  if (level >= 4) numShapes = 5;
+  if (level >= 3) numShapes = 3;
+  if (level >= 5) numShapes = 5;
   if (level >= 7) numShapes = 8;
   if (level >= 12) numShapes = 12;
 
@@ -60,9 +60,9 @@ export const useGameLogic = () => {
   const nextLevel = useCallback(() => {
     const newLevel = level + 1;
     setLevel(newLevel);
-    setTimer(prev => Math.min(prev + 3, 25));
+    setTimer(prev => Math.min(prev + 1, 25));
     setCurrentLevelData(generateLevel(newLevel));
-    setFlashMessage('+3s');
+    setFlashMessage('+1s');
     setTimeout(() => setFlashMessage(''), 1000);
   }, [level]);
 
